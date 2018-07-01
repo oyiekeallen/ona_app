@@ -1,0 +1,112 @@
+#!/bin/bash
+
+
+######                                             ######
+##                                                     ##
+## Shell script to demostrate api calls to the ONA API ##
+##            Written by Allen Oyieke                  ## 
+##                   31 July 2018                      ##
+##                                                     ##
+######                                             ######
+
+
+
+
+# Usage Function Message prompt -- displayed when function is called improperly (with errors) 
+
+usage() 
+{
+    echo -e  $"Usage: onapi username password [OPTIONS] \n\n\
+    Arguments:
+        username  enter username for account registered with ona. \n\
+        password  enter password for account. \n \n \
+        
+    Options: \n \
+     -c, --charts                       Fetch chart data associated with account \n \
+     -l, --list-users                   Fetch list of users linked to account \n \
+     -h, --help                         Display usage options (this menu)
+     -f, --forms                        Fetch list of forms in account \n \
+     -i, --project-info                 Fetch information specific to a project \n \
+     -p, --projects <projectd ID>       Get list of all projects \n \
+     -u, --user-details                 Get details of user account \n \
+     -v, --version                      Display script details(version,source,etc).\n\
+    exit 1 "
+}
+
+# Loop to validate if user name and password are passed as parameters to the function
+
+if [ ! -z "$0" -a "$0" != " " || ! -z "$1" -a "$1" != " " ]; then           #check if username and password fields are left blank
+
+    if [ ! -z "$0" -a "$0" != " "]; then  #check if username field is blank
+        echo -e $"[!] Error : Username Missing  (Kindly enter user name) \n\n"
+        
+    elif [ ! -z "$1" -a "$1" != " " ]; then   #check if password field left blank
+        echo -e $"[!] Error : Password Missing  (Kindly enter user password) \n\n"
+        
+    fi
+    
+    usage
+    
+elif [ ! -z "$1" -a "$1" != " " && ! -z "$0" -a "$0" != " " ]; then  #Check if both input values are left empty (blank) 
+    usage #display help menu
+    
+fi
+
+
+while getopts ":clhfip:uv" OPTION
+    do
+        case $OPTION in
+            
+            c|--charts)
+                #list charts
+                curl -X GET https://api.ona.io/api/v1/charts  -u "$0":"$1"
+
+                ;;
+
+            l|--list-users)
+                #list users
+                curl -X GET https://api.ona.io/api/v1/users -u "$0":"$1"
+
+                ;;
+
+            f|--forms)
+                #list forms
+                curl -X GET https://api.ona.io/api/v1/forms -u "$0":"$1"
+
+                ;;
+
+            p|--projects)
+                #list projects
+                curl -X GET https://api.ona.io/api/v1/projects/${OPTARG} -u "$0":"$1"
+
+                ;;
+
+            i|--project-info)
+                #Show project Information
+                curl -X GET https://api.ona.io/api/v1/projects/ -u "$0":"$1"
+
+                ;;
+                
+            u|--user)
+                #Get user details
+                curl -X GET https://api.ona.io/api/v1/user -u "$0":"$1"
+                
+                ;;
+            h|--help)
+                #diplay usage menu
+                usage
+                
+                ;;
+                
+            v| --version)
+                #Display script details version
+                echo -e " Version    : 0.0.1 \n \
+                          Updated    : 31 June 2018 \n \
+                          Maintainer : Allen Oyieke \n \
+                          Source     : https://github.com/oyiekeallen/ona_internship_app.git \n\n \
+                          Incase of any request,issues or comments use github to reach maintainer\n"
+        esac
+    
+done
+
+
