@@ -6,7 +6,7 @@ Clone th repo
 > git clone https://github.com/oyiekeallen/ona_internship_app.git
 
 Move to directory
-> cd 
+> cd ona_internship_app/
 
 execute the script
 > ./onapi username password [OPTIONS]
