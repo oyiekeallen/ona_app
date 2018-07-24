@@ -3,10 +3,10 @@
     
 # USAGE
 Clone th repo
-> git clone https://github.com/oyiekeallen/ona_internship_app.git
+> git clone git@github.com:oyiekeallen/ona_app.git
 
 Move to directory
-> cd ona_internship_app/
+> cd ona_app/
 
 execute the script
 > ./onapi username password [OPTIONS]
