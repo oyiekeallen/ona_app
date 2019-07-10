@@ -9,9 +9,6 @@
 ##                                                     ##
 ######                                             ######
 
-
-
-
 # Usage Function Message prompt -- displayed when function is called improperly (with errors) 
 
 usage() 
@@ -31,6 +28,11 @@ usage()
      -u, --user-details                 Get details of user account \n \
      -v, --version                      Display script details(version,source,etc).\n\
     exit 1 "
+}
+
+## Prettify
+function jsonval {
+    echo $1  | sed 's/\\\\\//\//g' | sed 's/[{}]//g' | awk -v k="text" '{n=split($0,a,","); print "====> JSON Output: \n ";for (i=1; i<=n; i++) print "\t" a[i] }' | sed 's/\"\:\"/\|/g' | sed 's/[\,]/ /g' | sed 's/\"//g'
 }
 
 # Loop to validate if user name and password are passed as parameters to the function
@@ -59,37 +61,37 @@ while getopts ":clhfip:uv" OPTION
             
             c|--charts)
                 #list charts
-                curl -X GET https://api.ona.io/api/v1/charts  -u "$0":"$1"
+                jsonval $(curl -X GET https://api.ona.io/api/v1/charts  -u "$0":"$1")
 
                 ;;
 
             l|--list-users)
                 #list users
-                curl -X GET https://api.ona.io/api/v1/users -u "$0":"$1"
+                jsonval $(curl -X GET https://api.ona.io/api/v1/users -u "$0":"$1")
 
                 ;;
 
             f|--forms)
                 #list forms
-                curl -X GET https://api.ona.io/api/v1/forms -u "$0":"$1"
+                jsonval $(curl -X GET https://api.ona.io/api/v1/forms -u "$0":"$1")
 
                 ;;
 
             p|--projects)
                 #list projects
-                curl -X GET https://api.ona.io/api/v1/projects/${OPTARG} -u "$0":"$1"
+                jsonval $(curl -X GET https://api.ona.io/api/v1/projects/${OPTARG} -u "$0":"$1")
 
                 ;;
 
             i|--project-info)
                 #Show project Information
-                curl -X GET https://api.ona.io/api/v1/projects/ -u "$0":"$1"
+                jsonval $(curl -X GET https://api.ona.io/api/v1/projects/ -u "$0":"$1")
 
                 ;;
                 
             u|--user)
                 #Get user details
-                curl -X GET https://api.ona.io/api/v1/user -u "$0":"$1"
+                jsonval $(curl -X GET https://api.ona.io/api/v1/user -u "$0":"$1")
                 
                 ;;
             h|--help)
@@ -100,13 +102,11 @@ while getopts ":clhfip:uv" OPTION
                 
             v| --version)
                 #Display script details version
-                echo -e " Version    : 0.0.1 \n \
-                          Updated    : 31 June 2018 \n \
+                echo -e " Version    : 0.0.2 \n \
+                          Updated    : 08 July 2019 \n \
                           Maintainer : Allen Oyieke \n \
-                          Source     : https://github.com/oyiekeallen/ona_internship_app.git \n\n \
+                          Source     : https://github.com/oyiekeallen/ona_app \n\n \
                           Incase of any request,issues or comments use github to reach maintainer\n"
         esac
     
 done
-
-
